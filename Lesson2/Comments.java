@@ -4,8 +4,7 @@
  * This is an example of a Java Doc comment. It is used to 
  * provide description of a class or a public method
  */
-public class HelloWorld {
-
+public class Comments {
     /**
      * The entry point to this application
      * 
@@ -27,6 +26,8 @@ public class HelloWorld {
             lines, as long as the lines are between the multi-line comment
             symbols
         */
+        System.out.println("The compiler ignores anything marked as a comment");
     }
 }
+
 
