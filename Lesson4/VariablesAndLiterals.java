@@ -15,5 +15,12 @@ public class VariablesAndLiterals {
         System.out.println(studentName + " is one of those " + numberOfStudents + " students.");
         System.out.println(studentName + " is planning on acing this course!");
         System.out.println("-------------------------------------------------------");
+
+        int fingersCount;
+        fingersCount = 20;
+        System.out.println(fingersCount);
+
+        fingersCount = 55;
+        System.out.println(fingersCount);
     }
 }
