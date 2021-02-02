@@ -6,10 +6,18 @@ public class VariableDeclaration {
         System.out.println();
 
         // Declare variables
-        byte age;
+        int age;
         short distanceInMiles;
         int capacity;
         long annualCapacity;
+
+        short birthYear = 1983;
+        short currentYear = 2021;
+        age = currentYear - birthYear;
+
+        double distanceFromEarthToTheMoonInMiles, 
+               distanceFromEarthToMarsInMiles, 
+               distanceFromEarthToJupiterInMiles;
 
         byte chairsAvailbe;
         chairsAvailbe = 28;
