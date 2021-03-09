@@ -7,15 +7,26 @@ public class FloatingPointNumbers {
         System.out.println();
 
         float pi;
-        pi = 3.141592653589793238462643F;
-        System.out.println("Result: " + pi);
+        // pi = 3.14F;
+        // System.out.println(pi);
 
         // double heightInInches;
-        // heightInInches = 5.9;
+        // heightInInches = pi;
 
-        float heightInInches;
-        heightInInches = 5.9F;
+        pi = 1_200L;
 
-        System.out.println(heightInInches);
+        long capacity = 23_000L;
+        int smallCapacity = (int)capacity;
+
+        // Step 1
+        pi = 3.14F;
+        int unit = 0;
+
+        unit = (int)pi;
+
+        System.out.println("PI is float and should have decimal places");
+        System.out.println(pi);
+        System.out.println("Unit is int and it should not have decimal places");
+        System.out.println(unit);
     }
 }
