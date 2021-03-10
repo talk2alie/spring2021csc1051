@@ -13,7 +13,10 @@ public class CombinedAssignmentOperators {
 
         double quiz3Grade;
         quiz3Grade = 88.2;
-        grades =+ quiz3Grade;
+        grades = grades + quiz3Grade;
+        System.out.println("grades is " + grades);
+
+        grades += quiz3Grade;
 
 
 
