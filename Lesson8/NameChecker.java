@@ -20,20 +20,20 @@ public class NameChecker {
 
         String message = "";
         usersName = usersName.toUpperCase();
-        if(usersName.startsWith("A") || 
-           usersName.startsWith("E") ||
-           usersName.startsWith("I") ||
-           usersName.startsWith("O") ||
-           usersName.startsWith("U")) {
-               message = "Begins with a vowel";
+        int nameLength = usersName.length();
+        final String vowels = "AEIOU";
+        String firstLetter = usersName.substring(0, 1);
+
+        if(vowels.contains(firstLetter)) {
+            message += "Begins with a vowel";
         } else {
-            message += "Begins with a consonant";
+            message += "Does not begin with a vowel";
         }
-        
-        if(usersName.length() >= 10) {
+
+        if(nameLength >= 10) {
             message += " and has at least 10 characters";
         } else {
-            message += ", but does not have at least 10 characters";
+            message += ". Has less than 10 characters";
         }
         System.out.println(message);
 
