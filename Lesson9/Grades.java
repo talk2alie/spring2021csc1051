@@ -21,11 +21,7 @@ public class Grades {
             System.out.printf("Please enter student %d's name: ", i);
             String studentName = keyboard.nextLine();
 
-            for(int j = 1; j <= numberOfGradesPerStudent; j++) {
-                System.out.printf("Please enter grade %d for %s: ", j, studentName);
-                double grade = keyboard.nextDouble();
-                totalGrades += grade;
-            }
+            totalGrades = currentStudentTotalGrades(keyboard, numberOfGradesPerStudent, totalGrades, studentName);
 
             // Clean buffer
             keyboard.nextLine();
@@ -38,5 +34,15 @@ public class Grades {
         keyboard.close();
 
         System.out.println();
+    }
+
+    private static double currentStudentTotalGrades(Scanner keyboard, int numberOfGradesPerStudent, double totalGrades,
+            String studentName) {
+        for(int j = 1; j <= numberOfGradesPerStudent; j++) {
+            System.out.printf("Please enter grade %d for %s: ", j, studentName);
+            double grade = keyboard.nextDouble();
+            totalGrades += grade;
+        }
+        return totalGrades;
     }
 }
