@@ -1,17 +1,17 @@
-package people;
+package data.people;
 
 import java.time.LocalDate;
 
 
 public abstract class Person {
-    private final long id;
+    private final int id;
     private final String firstName;
     private final String middleName;
     private final String lastName;
     private final LocalDate birthDate;
     private final String emailAddress;
 
-    public Person(long id
+    public Person(int id
                   , String firstName
                   , String middleName
                   , String lastName
@@ -42,7 +42,7 @@ public abstract class Person {
         return value;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

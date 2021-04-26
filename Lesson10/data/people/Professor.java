@@ -1,4 +1,4 @@
-package people;
+package data.people;
 
 public class Professor extends Person {
 
@@ -12,7 +12,7 @@ public class Professor extends Person {
      * @param emailAddress - REQUIRED: the professor's email address
      * @throws Exception - An exception is thrown if the value provided for any required field is null or an empty string
      */
-    public Professor(long id, String firstName, String middleName, String lastName, String birthDate,
+    public Professor(int id, String firstName, String middleName, String lastName, String birthDate,
             String emailAddress) throws Exception {
         super(id, firstName, middleName, lastName, birthDate, emailAddress);
     }    

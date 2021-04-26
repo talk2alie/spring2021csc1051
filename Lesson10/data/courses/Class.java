@@ -1,4 +1,4 @@
-package courses;
+package data.courses;
 
 public class Class {
     private final int id;

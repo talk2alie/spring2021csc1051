@@ -1,5 +1,8 @@
 import java.util.*;
-import people.*;
+
+import data.SchoolDbContext;
+import data.courses.Enrollment;
+import data.people.*;
 
 /**
  * WritingMethods
@@ -10,8 +13,13 @@ public class WritingMethods {
         
         var person = new Student(1, "Mohamed", "A.", "Pussah II", "1983-03-06", "mpussah@villanova.edu");
         person.setMajor("Computer Science");
+
+        var dbContext = new SchoolDbContext();
+        
         // person.setMinor("Studio Arts");
-        System.out.println(person);
+
+        var e = new Enrollment(1, 44, "2021-01-03");
+        System.out.println(e);
 
         // Arithmetic.greet("Welcome to modern Calculator", null);
 
