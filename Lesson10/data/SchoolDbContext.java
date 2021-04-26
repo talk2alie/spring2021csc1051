@@ -10,7 +10,7 @@ import data.people.*;
 public class SchoolDbContext {
     private final 
             // People
-            int ID = 0
+            int PERSON_ID = 0
             , FIRST_NAME = 1
             , MIDDLE_NAME = 2
             , LAST_NAME = 3
@@ -20,9 +20,23 @@ public class SchoolDbContext {
             , MINOR = 7
             
             // Enrollment
-            , CLASS_ID = 0
+            , ENROLLMENT_ID = 0
             , STUDENT_ID = 1
-            , ENROLLMENT_DATE = 2;
+            , ENROLLMENT_DATE = 2
+            
+            // Course
+            , COURSE_ID = 0
+            , NAME = 1
+            , DESCRIPTION = 2
+            
+            // Class
+            , CLASS_ID = 0
+            , R_COURSE_ID = 1
+            , PROFESSOR_ID = 2
+            , DAYS = 3
+            , START_TIME = 4
+            , END_TIME = 5
+            , LOCATION = 6;
 
     private final ArrayList<Class> classes;
     private final ArrayList<Course> courses;
@@ -57,7 +71,7 @@ public class SchoolDbContext {
             }
 
             var tokens = line.split(",");
-            var student = new Student(Integer.parseInt(tokens[ID])
+            var student = new Student(Integer.parseInt(tokens[PERSON_ID])
                                       , tokens[FIRST_NAME]
                                       , tokens[MIDDLE_NAME]
                                       , tokens[LAST_NAME]
@@ -94,7 +108,7 @@ public class SchoolDbContext {
             }
 
             var tokens = line.split(",");
-            var professor = new Professor(Integer.parseInt(tokens[ID])
+            var professor = new Professor(Integer.parseInt(tokens[PERSON_ID])
                                       , tokens[FIRST_NAME]
                                       , tokens[MIDDLE_NAME]
                                       , tokens[LAST_NAME]
@@ -118,7 +132,7 @@ public class SchoolDbContext {
             }
 
             var tokens = line.split(",");
-            var enrollment = new Enrollment(Integer.parseInt(tokens[CLASS_ID])
+            var enrollment = new Enrollment(Integer.parseInt(tokens[ENROLLMENT_ID])
                                       , Integer.parseInt(tokens[STUDENT_ID])
                                       , tokens[ENROLLMENT_DATE]);         
             
@@ -129,12 +143,50 @@ public class SchoolDbContext {
         reader = null;
     }
 
-    private void loadCourses() {
+    private void loadCourses() throws Exception {
+        var courses = new File("data/courses.csv");
+        reader = new Scanner(courses);
+        while(reader.hasNextLine()) {
+            var line = reader.nextLine();
+            if(line.startsWith("Id")) {
+                continue;
+            }
 
+            var tokens = line.split(",");
+            var course = new Course(Integer.parseInt(tokens[COURSE_ID])
+                                      , tokens[NAME]
+                                      , tokens[DESCRIPTION]);         
+            
+            this.courses.add(course.getId() - 1, course);            
+        }
+
+        reader.close();
+        reader = null;
     }
 
-    private void loadClasses() {
+    private void loadClasses() throws Exception {
+        var classes = new File("data/classes.csv");
+        reader = new Scanner(classes);
+        while(reader.hasNextLine()) {
+            var line = reader.nextLine();
+            if(line.startsWith("Id")) {
+                continue;
+            }
 
+            var tokens = line.split(",");
+            var currentClass = new Class(Integer.parseInt(tokens[CLASS_ID])
+                                         , Integer.parseInt(tokens[R_COURSE_ID])
+                                         , Integer.parseInt(tokens[PROFESSOR_ID])
+                                         , tokens[DAYS]
+                                         , tokens[START_TIME]
+                                         , tokens[END_TIME]
+                                         , tokens[LOCATION]);         
+            
+            this.classes.add(currentClass.getId() - 1, currentClass);            
+        }
+
+        reader.close();
+        reader = null;
     }
 
     public void saveChanges() {
