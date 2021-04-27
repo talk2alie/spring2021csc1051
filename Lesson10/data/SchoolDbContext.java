@@ -38,14 +38,26 @@ public class SchoolDbContext {
             , END_TIME = 5
             , LOCATION = 6;
 
+    private final String CLASS_FILE_NAME = "data/classes.csv"
+                         , COURSE_FILE_NAME = "data/courses.csv"
+                         , ENROLLMENT_FILE_NAME = "data/enrollments.csv"
+                         , PROFESSOR_FILE_NAME = "data/professors.csv"
+                         , STUDENT_FILE_NAME = "data/students.csv";
+
+    private final boolean APPEND = true;
+
     private final ArrayList<Class> classes;
     private final ArrayList<Course> courses;
     private final ArrayList<Enrollment> enrollments;
     private final ArrayList<Professor> professors;
     private final ArrayList<Student> students;
 
-    private Scanner reader;
-    private PrintWriter writer;
+    private PrintWriter 
+            classWriter
+            , courseWriter
+            , enrollmentWriter
+            , professorWriter
+            , studentWriter;
 
     public SchoolDbContext() throws Exception {
         classes = new ArrayList<>();
@@ -62,8 +74,8 @@ public class SchoolDbContext {
     }
 
     private void loadStudents() throws Exception {
-        var students = new File("data/students.csv");
-        reader = new Scanner(students);
+        var students = new File(STUDENT_FILE_NAME);
+        var reader = new Scanner(students);
         while(reader.hasNextLine()) {
             var line = reader.nextLine();
             if(line.startsWith("Id")) {
@@ -95,12 +107,11 @@ public class SchoolDbContext {
         }
 
         reader.close();
-        reader = null;
     }
 
     private void loadProfessors() throws Exception {
-        var professors = new File("data/professors.csv");
-        reader = new Scanner(professors);
+        var professors = new File(PROFESSOR_FILE_NAME);
+        var reader = new Scanner(professors);
         while(reader.hasNextLine()) {
             var line = reader.nextLine();
             if(line.startsWith("Id")) {
@@ -123,8 +134,8 @@ public class SchoolDbContext {
     }
 
     private void loadEnrollments() throws Exception {
-        var enrollments = new File("data/enrollments.csv");
-        reader = new Scanner(enrollments);
+        var enrollments = new File(ENROLLMENT_FILE_NAME);
+        var reader = new Scanner(enrollments);
         while(reader.hasNextLine()) {
             var line = reader.nextLine();
             if(line.startsWith("ClassId")) {
@@ -144,8 +155,8 @@ public class SchoolDbContext {
     }
 
     private void loadCourses() throws Exception {
-        var courses = new File("data/courses.csv");
-        reader = new Scanner(courses);
+        var courses = new File(COURSE_FILE_NAME);
+        var reader = new Scanner(courses);
         while(reader.hasNextLine()) {
             var line = reader.nextLine();
             if(line.startsWith("Id")) {
@@ -165,8 +176,8 @@ public class SchoolDbContext {
     }
 
     private void loadClasses() throws Exception {
-        var classes = new File("data/classes.csv");
-        reader = new Scanner(classes);
+        var classes = new File(CLASS_FILE_NAME);
+        var reader = new Scanner(classes);
         while(reader.hasNextLine()) {
             var line = reader.nextLine();
             if(line.startsWith("Id")) {
@@ -189,11 +200,150 @@ public class SchoolDbContext {
         reader = null;
     }
 
+    public void add(Course course) throws IOException {
+        courses.add(course.getId() - 1, course);
+
+        if(courseWriter == null) {
+            var fileWriter = new FileWriter(COURSE_FILE_NAME, APPEND);
+            courseWriter = new PrintWriter(fileWriter);
+        }
+
+        courseWriter.println(course.toString());
+    }
+
+    public void addAllCourses(List<Course> courses) throws IOException {
+        for (Course course : courses) {
+            add(course);
+        }
+    }
+    
+    public List<Course> getCourses() {
+        return new ArrayList<Course>(courses);
+    }
+    
+    public Course getCourseWithId(int id) {
+        return courses.get(id - 1);
+    }
+    
+    public void add(Class newClass) throws IOException {
+        classes.add(newClass);
+        
+        if(classWriter == null) {
+            var fileWriter = new FileWriter(CLASS_FILE_NAME, APPEND);
+            classWriter = new PrintWriter(fileWriter);
+        }
+        
+        classWriter.println(newClass.toString());
+    }
+
+    public void addAllClasses(List<Class> classes) throws IOException {
+        for (Class newClass : classes) {
+            add(newClass);
+        }
+    }
+
+    public List<Class> getClasses() {
+        return classes;
+    }
+
+    public Class getClassWithId(int id) {
+        return classes.get(id - 1);
+    }
+
+    public void add(Enrollment enrollment) throws IOException {
+        enrollments.add(enrollment.getStudentId() - 1, enrollment);
+
+        if(enrollmentWriter == null) {
+            var fileWriter = new FileWriter(ENROLLMENT_FILE_NAME, APPEND);
+            enrollmentWriter = new PrintWriter(fileWriter);
+        }
+
+        enrollmentWriter.println(enrollment.toString());
+    }
+
+    public void addAllEnrollments(List<Enrollment> enrollments) throws IOException {
+        for (Enrollment enrollment : enrollments) {
+            add(enrollment);
+        }
+    }
+
+    public List<Enrollment> getEnrollmentsForStudentId(int studentId) {
+        var studentEnrollments = new ArrayList<Enrollment>();
+        for (Enrollment enrollment : enrollments) {
+            if(enrollment.getStudentId() == studentId) {
+                studentEnrollments.add(enrollment);
+            }
+        }
+
+        return enrollments;
+    }
+
+    public void add(Professor professor) throws IOException {
+        professors.add(professor.getId() - 1, professor);
+
+        if(professorWriter == null) {
+            var fileWriter = new FileWriter(PROFESSOR_FILE_NAME, APPEND);
+            professorWriter = new PrintWriter(fileWriter);
+        }
+
+        professorWriter.println(professor.toString());
+    }
+
+    public void addAllProfessors(List<Professor> professors) throws IOException {
+        for (Professor professor : professors) {
+            add(professor);
+        }
+    }
+
+    public Professor getProfessorWithId(int id) {
+        return professors.get(id - 1);
+    }
+
+    public void add(Student student) throws IOException {
+        students.add(student.getId() - 1, student);
+
+        if(studentWriter == null) {
+            var fileWriter = new FileWriter(STUDENT_FILE_NAME, APPEND);
+            studentWriter = new PrintWriter(fileWriter);
+        }
+
+        studentWriter.println(student.toString());
+    }
+
+    public void allAllStudents(List<Student> students) throws IOException {
+        for (Student student : students) {
+            add(student);
+        }
+    }
+
+    public Student getStudentWithId(int id) {
+        return students.get(id - 1);
+    }
+
     public void saveChanges() {
-        if(writer != null) {
-            writer.flush();
-            writer.close();
-            writer = null;
+        if(classWriter != null) {
+            classWriter.close();
+            classWriter = null;
+        }
+
+        if(courseWriter != null) {
+            courseWriter.close();
+            courseWriter = null;
+        }
+
+        if(enrollmentWriter != null) {
+            enrollmentWriter.close();
+            enrollmentWriter = null;
+        }
+
+        if(professorWriter != null) {
+            professorWriter.close();
+            professorWriter = null;
+        }
+
+        if(studentWriter != null) {
+            studentWriter.close();
+            studentWriter = null;
         }
     }
 }
