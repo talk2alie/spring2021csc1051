@@ -1,0 +1,4 @@
+Id,CourseId,ProfessorId,Days,StartTime,EndTime,Location
+1,1,1,MWF,1:55 PM,2:45 PM,Mendel 161
+2,1,1,TR,3:55 PM,5:45 PM,Mendel G87
+3,1,2,TR,9:00 AM,10:50 AM,Mendel 211
