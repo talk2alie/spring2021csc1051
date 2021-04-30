@@ -45,12 +45,13 @@ public class SchoolDbContext {
                          , STUDENT_FILE_NAME = "data/students.csv";
 
     private final boolean APPEND = true;
+    private final int MAX_CAPACITY = 1000;
 
-    private final ArrayList<Class> classes;
-    private final ArrayList<Course> courses;
-    private final ArrayList<Enrollment> enrollments;
-    private final ArrayList<Professor> professors;
-    private final ArrayList<Student> students;
+    private final Class[] classes;
+    private final Course[] courses;
+    private final Enrollment[] enrollments;
+    private final Professor[] professors;
+    private final Student[] students;
 
     private PrintWriter 
             classWriter
@@ -60,11 +61,11 @@ public class SchoolDbContext {
             , studentWriter;
 
     public SchoolDbContext() throws Exception {
-        classes = new ArrayList<>();
-        courses = new ArrayList<>();
-        enrollments = new ArrayList<>();
-        professors = new ArrayList<>();
-        students = new ArrayList<>();
+        classes = new Class[MAX_CAPACITY];
+        courses = new Course[MAX_CAPACITY];
+        enrollments = new Enrollment[MAX_CAPACITY];
+        professors = new Professor[MAX_CAPACITY];
+        students = new Student[MAX_CAPACITY];
 
         loadClasses();
         loadCourses();
@@ -89,6 +90,7 @@ public class SchoolDbContext {
                                       , tokens[LAST_NAME]
                                       , tokens[BIRTH_DATE]
                                       , tokens[EMAIL_ADDRESS]);
+                                      
             if(tokens.length > MAJOR) {
                 var major = tokens[MAJOR];
                 if(major != null && major.length() > 0) {
@@ -103,7 +105,7 @@ public class SchoolDbContext {
                 }
             }
             
-            this.students.add(student.getId() - 1, student);            
+            this.students[student.getId() - 1] = student;
         }
 
         reader.close();
@@ -126,11 +128,10 @@ public class SchoolDbContext {
                                       , tokens[BIRTH_DATE]
                                       , tokens[EMAIL_ADDRESS]);         
             
-            this.professors.add(professor.getId() - 1, professor);            
+            this.professors[professor.getId() - 1] = professor;
         }
 
         reader.close();
-        reader = null;
     }
 
     private void loadEnrollments() throws Exception {
@@ -147,11 +148,10 @@ public class SchoolDbContext {
                                       , Integer.parseInt(tokens[STUDENT_ID])
                                       , tokens[ENROLLMENT_DATE]);         
             
-            this.enrollments.add(enrollment.getStudentId() - 1, enrollment);            
+            this.enrollments[enrollment.getStudentId() - 1] = enrollment;
         }
 
         reader.close();
-        reader = null;
     }
 
     private void loadCourses() throws Exception {
@@ -168,11 +168,10 @@ public class SchoolDbContext {
                                       , tokens[NAME]
                                       , tokens[DESCRIPTION]);         
             
-            this.courses.add(course.getId() - 1, course);            
+            this.courses[course.getId() - 1] = course;            
         }
 
         reader.close();
-        reader = null;
     }
 
     private void loadClasses() throws Exception {
@@ -193,15 +192,14 @@ public class SchoolDbContext {
                                          , tokens[END_TIME]
                                          , tokens[LOCATION]);         
             
-            this.classes.add(currentClass.getId() - 1, currentClass);            
+            this.classes[currentClass.getId() - 1] = currentClass;
         }
 
         reader.close();
-        reader = null;
     }
 
     public void add(Course course) throws IOException {
-        courses.add(course.getId() - 1, course);
+        courses[course.getId() - 1] = course;
 
         if(courseWriter == null) {
             var fileWriter = new FileWriter(COURSE_FILE_NAME, APPEND);
@@ -217,16 +215,25 @@ public class SchoolDbContext {
         }
     }
     
-    public List<Course> getCourses() {
-        return new ArrayList<Course>(courses);
+    public Course[] getCourses() {
+        return copy(courses);
     }
     
+    private Course[] copy(Course[] courses) {
+        var copyOfCourses = new Course[courses.length];
+        for (int i = 0; i < copyOfCourses.length; i++) {
+            copyOfCourses[i] = courses[i];
+        }
+
+        return copyOfCourses;
+    }
+
     public Course getCourseWithId(int id) {
-        return courses.get(id - 1);
+        return courses[id - 1];
     }
     
     public void add(Class newClass) throws IOException {
-        classes.add(newClass);
+        classes[newClass.getId() - 1] = newClass;
         
         if(classWriter == null) {
             var fileWriter = new FileWriter(CLASS_FILE_NAME, APPEND);
@@ -242,16 +249,24 @@ public class SchoolDbContext {
         }
     }
 
-    public List<Class> getClasses() {
-        return classes;
+    public Class[] getClasses() {
+        return copy(classes);
+    }
+
+    private Class[] copy(Class[] classes) {
+        var copyOfClasses = new Class[classes.length];
+        for (int i = 0; i < copyOfClasses.length; i++) {
+            copyOfClasses[i] = classes[i];
+        }
+        return copyOfClasses;
     }
 
     public Class getClassWithId(int id) {
-        return classes.get(id - 1);
+        return classes[id - 1];
     }
 
     public void add(Enrollment enrollment) throws IOException {
-        enrollments.add(enrollment.getStudentId() - 1, enrollment);
+        enrollments[enrollment.getStudentId() - 1] = enrollment;
 
         if(enrollmentWriter == null) {
             var fileWriter = new FileWriter(ENROLLMENT_FILE_NAME, APPEND);
@@ -267,7 +282,7 @@ public class SchoolDbContext {
         }
     }
 
-    public List<Enrollment> getEnrollmentsForStudentId(int studentId) {
+    public Enrollment[] getEnrollmentsForStudentId(int studentId) {
         var studentEnrollments = new ArrayList<Enrollment>();
         for (Enrollment enrollment : enrollments) {
             if(enrollment.getStudentId() == studentId) {
@@ -275,11 +290,11 @@ public class SchoolDbContext {
             }
         }
 
-        return enrollments;
+        return (Enrollment[])studentEnrollments.toArray();
     }
 
     public void add(Professor professor) throws IOException {
-        professors.add(professor.getId() - 1, professor);
+        professors[professor.getId() - 1] = professor;
 
         if(professorWriter == null) {
             var fileWriter = new FileWriter(PROFESSOR_FILE_NAME, APPEND);
@@ -296,11 +311,11 @@ public class SchoolDbContext {
     }
 
     public Professor getProfessorWithId(int id) {
-        return professors.get(id - 1);
+        return professors[id - 1];
     }
 
     public void add(Student student) throws IOException {
-        students.add(student.getId() - 1, student);
+        students[student.getId() - 1] = student;
 
         if(studentWriter == null) {
             var fileWriter = new FileWriter(STUDENT_FILE_NAME, APPEND);
@@ -317,7 +332,7 @@ public class SchoolDbContext {
     }
 
     public Student getStudentWithId(int id) {
-        return students.get(id - 1);
+        return students[id - 1];
     }
 
     public void saveChanges() {
